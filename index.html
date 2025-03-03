@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>递增随机数生成器</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+      }
+      input {
+        padding: 10px;
+        font-size: 16px;
+        width: 200px;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      #codeDisplay {
+        font-size: 24px;
+        margin: 20px 0;
+        color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>递增随机数生成器</h1>
+    <input
+      type="number"
+      id="startNumber"
+      placeholder="输入起始六位数"
+      min="100000"
+      max="999999"
+    />
+    <button onclick="startGeneration()">开始生成</button>
+    <button onclick="generateNext()">生成下一个</button>
+    <p id="codeDisplay"></p>
+    <button onclick="copyCode()">复制当前编码</button>
+
+    <script>
+      let currentNumber = 0; // 当前生成的随机数
+      const generatedNumbers = new Set(); // 存储已生成的随机数
+
+      // 开始生成
+      function startGeneration() {
+        const startNumber = parseInt(
+          document.getElementById("startNumber").value
+        );
+        if (
+          isNaN(startNumber) ||
+          startNumber < 100000 ||
+          startNumber > 999999
+        ) {
+          alert("请输入有效的六位数！");
+          return;
+        }
+        currentNumber = startNumber;
+        generatedNumbers.clear(); // 清空已生成的随机数
+        document.getElementById(
+          "codeDisplay"
+        ).innerText = `当前编码：${currentNumber}`;
+      }
+
+      // 生成下一个随机数
+      function generateNext() {
+        if (currentNumber === 0) {
+          alert("请先输入起始六位数并点击开始生成！");
+          return;
+        }
+        let nextNumber;
+        do {
+          nextNumber = currentNumber + Math.floor(Math.random() * 100); // 随机递增
+          if (nextNumber > 999999) nextNumber = 100000; // 如果超过999999，重置为100000
+        } while (generatedNumbers.has(nextNumber)); // 确保不重复
+
+        generatedNumbers.add(nextNumber);
+        currentNumber = nextNumber;
+        document.getElementById(
+          "codeDisplay"
+        ).innerText = `当前编码：${currentNumber}`;
+      }
+
+      // 复制当前编码
+      function copyCode() {
+        if (currentNumber === 0) {
+          alert("没有可复制的编码！");
+          return;
+        }
+        navigator.clipboard
+          .writeText(currentNumber.toString())
+          .then(() => alert("编码已复制！"))
+          .catch(() => alert("复制失败，请手动复制！"));
+      }
+    </script>
+  </body>
+</html>
